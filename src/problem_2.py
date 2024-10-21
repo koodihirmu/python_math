@@ -1,3 +1,4 @@
+from inspect import signature
 from typing import List
 
 import numpy as np
@@ -9,69 +10,60 @@ class Triangle:
         Creates a triangle object that calculates one missing side automatically
         """
         # assign variables to a dict
-        self.known_sides = {}
-        if hypothenusa:
-            self.known_sides["hyp"] = hypothenusa
-        if side_a:
-            self.known_sides["side_a"] = side_a
-        if side_b:
-            self.known_sides["side_b"] = side_b
+        self.hyp = hypothenusa
+        self.side_a = side_a
+        self.side_b = side_b
+        self.valid = False
+
+        # amount of known sides
+        known_sides = 0
+        if self.hyp:
+            known_sides += 1
+        if self.side_a:
+            known_sides += 1
+        if self.side_b:
+            known_sides += 1
 
         # check if input triangle is correct
-        if len(self.known_sides.keys()) < 2:
-            print("Not enough known sides")
+        if known_sides < 2:
+            print("Not enough known sides to calculate")
             return
-        if len(self.known_sides.keys()) >= 3:
-            print("Triangle is already solved")
+        elif known_sides > 2:
+            print("Triangle is solved already")
             return
 
         # calculating and figuring out which side is missing
-        try:
-            if self.known_sides["hyp"] and self.known_sides["side_a"]:
-                self.known_sides["side_b"] = np.sqrt(
-                    abs(
-                        np.square(self.known_sides["hyp"])
-                        - np.square(self.known_sides["side_a"])
-                    )
-                )
-                # a²+b²=c²
+        # a²+b²=c²
+        if self.hyp and self.side_a:
+            self.side_b = np.sqrt(abs(np.square(self.hyp) - np.square(self.side_a)))
+            self.valid = True
             return
-        except:
-            print("hypothenusa or side_a not found")
-        try:
-            if self.known_sides["hyp"] and self.known_sides["side_b"]:
-                self.known_sides["side_a"] = np.sqrt(
-                    abs(
-                        np.square(self.known_sides["hyp"])
-                        - np.square(self.known_sides["side_b"])
-                    )
-                )
+        if self.hyp and self.side_b:
+            self.side_a = np.sqrt(abs(np.square(self.hyp) - np.square(self.side_b)))
+            self.valid = True
             return
-        except:
-            print("hypothenusa or side_b not found")
-        try:
-            if self.known_sides["side_a"] and self.known_sides["side_b"]:
-                self.known_sides["hyp"] = np.sqrt(
-                    np.square(self.known_sides["side_a"])
-                    + np.square(self.known_sides["side_b"])
-                )
+        if self.side_a and self.side_b:
+            self.hyp = np.sqrt(np.square(self.side_a) + np.square(self.side_b))
+            self.valid = True
             return
-        except:
-            print("side_a or side_b not found")
 
     def __del__(self) -> None:
         print("Triangle deleted")
 
     def print(self) -> None:
-        keys = list(self.known_sides.keys())
-        for key in keys:
-            print(f"{key} | {self.known_sides[key]:.2f}")
+        if self.valid:
+            print(f"side_a | {self.side_a:.2f}")
+            print(f"side_b | {self.side_b:.2f}")
+            print(f"hyp    | {self.hyp:.2f}")
+        else:
+            print("Invalid triangle")
 
 
 if __name__ == "__main__":
     triangle: List[Triangle] = [Triangle(2.3, 1.6)]
     triangle.append(Triangle(2.3, None, 2.8))
     triangle.append(Triangle(None, 1.6, 2.8))
+    triangle.append(Triangle(None, None, None))
     for tri in triangle:
         tri.print()
     input("press enter ...")
