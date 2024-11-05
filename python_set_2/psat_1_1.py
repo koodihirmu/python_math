@@ -44,7 +44,7 @@ pist_xy = np.array([30, 45, 60, 90, 120, 150, 180, 270])
 x = get_x(pist_xy)
 y = get_y(pist_xy)
 
-plt.scatter(x, y, marker="x")
+plt.scatter(x, y, marker="o")
 
 for i in pist_xy:
     plt.annotate(
