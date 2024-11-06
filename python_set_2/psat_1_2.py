@@ -1,6 +1,3 @@
-import itertools as it
-from typing import List
-
 import matplotlib.pyplot as plt
 import numpy as np
 
